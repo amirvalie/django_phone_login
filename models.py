@@ -67,7 +67,9 @@ class PhoneToken(models.Model):
 
     def validate_otp(self):
         valid_otp=getattr(settings, 'DURATION_OF_OTP_VALIDATY', 5)
-        if timezone.now() > self.timestamp + datetime.timedelta(minutes=valid_otp):
+        
+        if (self.otp is None 
+            or timezone.now() > self.timestamp + datetime.timedelta(minutes=valid_otp)):
             return True
         return 
 
