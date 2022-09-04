@@ -29,19 +29,24 @@ AUTHENTICATION_BACKENDS = [
     'django_phone_login.backends.phone_backend.PhoneBackend',
     'django.contrib.auth.backends.ModelBackend'
 ]
+```
 
-#
+* Add these fields to the settings to control the restrictions
+
+```
 AUTH_USER_MODEL = 'django_phone_login.User'
 EXPIRE_CACHE=20
 DURATION_OF_OTP_VALIDATY=2
 PHONE_LOGIN_ATTEMPTS=10
 ```
+
 * Add the below urls.py
 
+```
 urlpatterns = [
     path('user/', include('django_phone_login.urls'),name='phone_login'),
 ]
-
+```
 
 
 ## Authors
