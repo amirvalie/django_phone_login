@@ -12,7 +12,7 @@ def password_login_decorator(func):
                 user=User.objects.get(phone=phone_number)
             except User.DoesNotExist:
                 return redirect('phone_login:login')
-            finally:
+            else:
                 if user.password:
                     return func(request)    
                 else:
