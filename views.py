@@ -75,6 +75,7 @@ def password_login(request):
     
 @anonymous_required
 @check_limitation
+@password_login_decorator
 def forget_password(request):
     if request.method=='POST':
         form=ForgetPasswordForm(data=request.POST,request=request)
@@ -89,7 +90,6 @@ def forget_password(request):
 
 
 @phone_number_require('forget_password','phone_number_for_password')    
-@password_login_decorator
 def confirm_password_token(request):
     if request.method=='POST':
         form=PhoneTokenConfirmForm(data=request.POST,request=request)
