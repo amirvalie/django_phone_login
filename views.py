@@ -13,7 +13,7 @@ from django.urls import reverse
 from django.contrib.auth.tokens import default_token_generator
 from .limit_request import GenerateLimitation,check_limitation
 from .decorators import (
-    password_login_decorator,
+    password_require,
     phone_number_require,
     anonymous_required,
     )
@@ -27,11 +27,18 @@ from .forms import (
 User=get_user_model()
 
 def invalid_attempts_func(request):
+    """ 
+    This function is executed when the number of user attempts to login 
+    or enter the code exceeds the allowed limit
+    """
     return render(request,'registration/invalid_attempts_func.html')
     
 @anonymous_required
 @check_limitation
 def generate_token(request):
+    """
+    Create or get PhoneToken object and send a SMS OTP
+    """
     if request.method=='POST':
         form=PhoneTokenForm(data=request.POST,request=request)
         if form.is_valid():
@@ -57,7 +64,7 @@ def confirm_token(request):
     return render(request,'registration/confirm_phone.html',{'form':form})
     
 @phone_number_require('login','phone_number')
-@password_login_decorator
+@password_require
 @check_limitation
 def password_login(request):
     if request.method=="POST":
@@ -75,7 +82,7 @@ def password_login(request):
     
 @anonymous_required
 @check_limitation
-@password_login_decorator
+@password_require
 def forget_password(request):
     if request.method=='POST':
         form=ForgetPasswordForm(data=request.POST,request=request)

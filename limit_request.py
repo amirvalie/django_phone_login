@@ -3,6 +3,13 @@ from django.core.cache import cache
 
 
 class GenerateLimitation(object):
+    """
+    We use cache to limit user requests.
+    The user limit is based on the IP address.
+    In the first part, we store the IP address of the user and the number of requests in the cache.
+    and in the next part, which is a decorator,we check whether the number of user requests is valid or not.
+    This method allows us to use this class wherever we want.
+    """
     expire_cache=getattr(settings,'EXPIRE_CACHE',20)
     def __init__(self,request):
         self.ip_address=request.user.ip_address
@@ -16,10 +23,12 @@ class GenerateLimitation(object):
         cache.incr(self.ip_address)
 
     def expire_after(self):
-        "Used for setting the memcached cache expiry"
         return GenerateLimitation.expire_cache * 60
         
 def check_limitation(func):
+    """
+    in this decorator we check whether the number of user requests is valid or not
+    """
     def wrapper(request):
         from .views import invalid_attempts_func
         attempts=cache.get(request.user.ip_address)

@@ -20,6 +20,10 @@ class PhoneBackend(ModelBackend):
                 is_active=True
             )
     def authenticate(self,request,otp,phone_number):
+        """
+        we check the phone number and SMS OTP and the time validity of the SMS OTP.
+        If the information is correct, a user will be created or taken with the given phone number
+        """
         try:
             expire_time=getattr(settings, 'EXPIRE_TIME', 10)
             diffrence_time=timezone.now() + datetime.timedelta(minutes=expire_time)

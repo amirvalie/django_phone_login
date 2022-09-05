@@ -73,13 +73,12 @@ class PhoneToken(models.Model):
     timestamp=models.DateTimeField(auto_now=True)
     used=models.BooleanField(default=False)
     ip_address=models.GenericIPAddressField(null=True,blank=True,editable=False)
-    class Meta:
-        verbose_name = "توکن OTP"
-        verbose_name_plural = "توکن OTP"
 
     def validate_otp(self):
+        """
+        This method checks whether it is allowed to send the code or not
+        """
         valid_otp=getattr(settings, 'DURATION_OF_OTP_VALIDATY', 5)
-        
         if (self.otp is None 
             or timezone.now() > self.timestamp + datetime.timedelta(minutes=valid_otp)):
             return True
@@ -97,6 +96,9 @@ class PhoneToken(models.Model):
 
     @classmethod
     def generate_otp(cls):
+        """
+        Generate random number for otp 
+        """
         number='0123456789'
         length=5
         key="".join(random.sample(number,length))
