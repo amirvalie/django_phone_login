@@ -43,12 +43,12 @@ CACHES = {
     }
 }
 
+AUTH_USER_MODEL = 'django_phone_login.User'
 ```
 
 * Add these fields to the settings to control the restrictions
 
 ```
-AUTH_USER_MODEL = 'django_phone_login.User'
 EXPIRE_CACHE=20
 DURATION_OF_OTP_VALIDATY=2
 PHONE_LOGIN_ATTEMPTS=10
