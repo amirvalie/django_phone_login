@@ -4,7 +4,7 @@ Django Phone Login with both SMS verification and password
 
 ## Description
 
-With this package, you can login or register with a password or SMS name verification. This package also has other features such as forgetting the password and changing the password.
+With this package, you can login or register with a password or SMS code verification to verify the user account. This package also has other features such as forgetting the password and changing the password.
 
 
 ### Dependencies
@@ -29,6 +29,20 @@ AUTHENTICATION_BACKENDS = [
     'django_phone_login.backends.phone_backend.PhoneBackend',
     'django.contrib.auth.backends.ModelBackend'
 ]
+
+MIDDLEWARE = [
+    ...
+
+    'django_phone_login.middleware.IpAddressMiddleware',
+
+]
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
+
 ```
 
 * Add these fields to the settings to control the restrictions
