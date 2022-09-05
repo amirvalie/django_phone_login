@@ -22,7 +22,7 @@ def regex_phone_number(value):
 class PhoneTokenForm(forms.Form):
     phone_number=forms.CharField()
     error_massages={
-        'invalid_phone':_('شماره تلفن نامعتبر است.'),
+        'invalid_phone':_('Phone number is not valid'),
     }
     def __init__(self,request=None, *args, **kwargs):
         self.request = request
@@ -38,14 +38,14 @@ class PhoneTokenForm(forms.Form):
             return phone_number
         else:
             raise ValidationError(
-                self.error_massages['invalid_phone']
+                self.error_massages['invalid_phone'],
             )
 
 class PhoneTokenConfirmForm(forms.Form):
     otp=forms.IntegerField()
     error_massages={
-        'invalid_otp':_('کد وارد شده اشتباه میباشد'),
-        'inactive':_('حساب شما غیر فعال شده است'),
+        'invalid_otp':_('OTP code is not valid'),
+        'inactive':_('Your account is inactive'),
     }
     def __init__(self, request=None, *args, **kwargs):
         self.request = request
@@ -58,11 +58,11 @@ class PhoneTokenConfirmForm(forms.Form):
         self.user_cache=authenticate(
             self.request,
             otp=otp,
-            phone_number=self.request.session['phone_number']
+            phone_number=self.request.session['phone_number'],
         )
         if self.user_cache is None:
             raise ValidationError(
-                self.error_massages['invalid_otp']
+                self.error_massages['invalid_otp'],
             )
         else:
             self.inactive_user(self.user_cache)
@@ -71,15 +71,14 @@ class PhoneTokenConfirmForm(forms.Form):
     def inactive_user(self,user):
         if user.is_active==False:
             raise ValidationError(
-                self.error_massages['inactive']
+                self.error_massages['inactive'],
             )
 
 class PasswordLoginForm(forms.Form):
     password=forms.CharField(widget=forms.PasswordInput())        
     error_massages={
-        'invalid_login':'لطفا یوزرنیم و پسورد را درست وارد کنید '
-        'دقت کنید ممکن هست به حروف کوچک و بزرگ حساس باشند.',
-        'inactive':'حساب شما غیر فعال است.'
+        "Please enter a correct username and password. Note that both "
+        "fields may be case-sensitive."
     }
     def __init__(self, request=None, *args, **kwargs):
         self.request = request
@@ -90,7 +89,7 @@ class PasswordLoginForm(forms.Form):
         password=self.cleaned_data['password']
         self.user_cache=authenticate(
             username=self.request.session['phone_number'],
-            password=password
+            password=password,
         )
         if self.user_cache is None:
             raise  ValidationError(
@@ -105,8 +104,8 @@ class PasswordLoginForm(forms.Form):
 class ForgetPasswordForm(forms.Form):
     phone_number=forms.CharField()
     error_massages={
-        'phone_token_does_not_exist':_('کاربری با این شماره تلفن وجود ندارد.'),
-        'invalid_phone':_('شماره تلفن نامعتبر است.'),
+        'phone_token_does_not_exist':_('There is not account with this phone number'),
+        'invalid_phone':_('Phone number is not valid'),
     }
     def __init__(self, request=None, *args, **kwargs):
         self.request = request
@@ -118,15 +117,15 @@ class ForgetPasswordForm(forms.Form):
         if regex_phone_number(phone_number):
             try:
                 self.phone_token=PhoneToken.objects.get(
-                    phone_number=phone_number
+                    phone_number=phone_number,
                 )
             except:
                 raise ValidationError(
-                    self.error_massages['phone_token_does_not_exist']
+                    self.error_massages['phone_token_does_not_exist'],
                 )
         else:
             raise ValidationError(
-                self.error_massages['invalid_phone']
+                self.error_massages['invalid_phone'],
             )
 
 class SetPasswordForm(forms.Form):

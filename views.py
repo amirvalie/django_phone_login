@@ -123,4 +123,4 @@ def change_password(request,uidb64, token):
             form=SetPasswordForm()
         return render(request,'registration/change_password.html',{'form':form})
     else:
-        return HttpResponse('لینک نامعتبر است!')
+        return HttpResponse('Link is not valid!')
