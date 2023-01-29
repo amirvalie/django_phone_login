@@ -26,7 +26,7 @@ INSTALLED_APPS += [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    'django_phone_login.backends.phone_backend.PhoneBackend',
+    'django_phone_login.backend.phone_backend.PhoneBackend',
     'django.contrib.auth.backends.ModelBackend'
 ]
 
