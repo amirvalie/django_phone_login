@@ -40,6 +40,9 @@ def invalid_attempts_massage_view(request):
 
 
 class GenerateToken(FormView):
+    """
+        Create or get PhoneToken object and send a SMS OTP
+    """
     form_class=PhoneTokenForm
     template_name='registration/generate_token.html'
     success_url=reverse_lazy('phone_login:confirm_otp')
