@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.core.cache import cache
 
-
 class GenerateLimitation(object):
     """
     We use cache to limit user requests.
@@ -30,10 +29,10 @@ def check_limitation(func):
     in this decorator we check whether the number of user requests is valid or not
     """
     def wrapper(request):
-        from .views import invalid_attempts_func
+        from .views import invalid_attempts_massage_view
         attempts=cache.get(request.user.ip_address)
         if attempts is None or attempts < getattr(settings,'PHONE_LOGIN_ATTEMPTS',10):
             return func(request)
-        return invalid_attempts_func(request)
+        return invalid_attempts_massage_view(request)
     return wrapper
 

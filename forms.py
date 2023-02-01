@@ -53,6 +53,7 @@ class PhoneTokenConfirmForm(forms.Form):
         super().__init__(*args, **kwargs)
 
     def clean_otp(self):
+        print('form request:',self.request)
         GenerateLimitation(self.request)
         otp=self.cleaned_data['otp']
         self.user_cache=authenticate(
@@ -77,8 +78,9 @@ class PhoneTokenConfirmForm(forms.Form):
 class PasswordLoginForm(forms.Form):
     password=forms.CharField(widget=forms.PasswordInput())        
     error_massages={
-        "Please enter a correct username and password. Note that both "
-        "fields may be case-sensitive."
+        "invalid_login":"Please enter a correct username and password. Note that both "
+        "fields may be case-sensitive.",
+        'inactive':_('Your account is inactive'),
     }
     def __init__(self, request=None, *args, **kwargs):
         self.request = request
