@@ -1,7 +1,8 @@
 from django import forms
 from .models import PhoneToken
 from django.contrib.auth import get_user_model
-User=get_user_model()
+
+User = get_user_model()
 from django.core.exceptions import ValidationError
 from django.contrib.auth import (
     authenticate, get_user_model, password_validation,
@@ -12,27 +13,30 @@ from django_phone_login.models import PhoneToken
 from django.conf import settings
 from .limit_request import GenerateLimitation
 
+
 def regex_phone_number(value):
     phone_number = value
-    regex='09(\d{9})$'
+    regex = '09(\d{9})$'
     if re.match(regex, phone_number):
         return True
     return False
 
+
 class PhoneTokenForm(forms.Form):
-    phone_number=forms.CharField()
-    error_massages={
-        'invalid_phone':_('Phone number is not valid'),
+    phone_number = forms.CharField()
+    error_massages = {
+        'invalid_phone': _('Phone number is not valid'),
     }
-    def __init__(self,request=None, *args, **kwargs):
+
+    def __init__(self, request=None, *args, **kwargs):
         self.request = request
         self.phone_token = None
         super().__init__(*args, **kwargs)
 
     def clean_phone_number(self):
-        phone_number=self.cleaned_data['phone_number']
+        phone_number = self.cleaned_data['phone_number']
         if regex_phone_number(phone_number):
-            self.phone_token=PhoneToken.objects.get_or_create(
+            self.phone_token = PhoneToken.objects.get_or_create(
                 phone_number=phone_number,
             )[0]
             return phone_number
@@ -41,22 +45,24 @@ class PhoneTokenForm(forms.Form):
                 self.error_massages['invalid_phone'],
             )
 
+
 class PhoneTokenConfirmForm(forms.Form):
-    otp=forms.IntegerField()
-    error_massages={
-        'invalid_otp':_('OTP code is not valid'),
-        'inactive':_('Your account is inactive'),
+    otp = forms.IntegerField()
+    error_massages = {
+        'invalid_otp': _('OTP code is not valid'),
+        'inactive': _('Your account is inactive'),
     }
+
     def __init__(self, request=None, *args, **kwargs):
         self.request = request
         self.user_cache = None
         super().__init__(*args, **kwargs)
 
     def clean_otp(self):
-        print('form request:',self.request)
+        print('form request:', self.request)
         GenerateLimitation(self.request)
-        otp=self.cleaned_data['otp']
-        self.user_cache=authenticate(
+        otp = self.cleaned_data['otp']
+        self.user_cache = authenticate(
             self.request,
             otp=otp,
             phone_number=self.request.session['phone_number'],
@@ -69,56 +75,60 @@ class PhoneTokenConfirmForm(forms.Form):
             self.inactive_user(self.user_cache)
         return str(otp)
 
-    def inactive_user(self,user):
-        if user.is_active==False:
+    def inactive_user(self, user):
+        if user.is_active == False:
             raise ValidationError(
                 self.error_massages['inactive'],
             )
 
+
 class PasswordLoginForm(forms.Form):
-    password=forms.CharField(widget=forms.PasswordInput())        
-    error_massages={
-        "invalid_login":"Please enter a correct username and password. Note that both "
-        "fields may be case-sensitive.",
-        'inactive':_('Your account is inactive'),
+    password = forms.CharField(widget=forms.PasswordInput())
+    error_massages = {
+        "invalid_login": "Please enter a correct username and password. Note that both "
+                         "fields may be case-sensitive.",
+        'inactive': _('Your account is inactive'),
     }
+
     def __init__(self, request=None, *args, **kwargs):
         self.request = request
         self.user_cache = None
         super().__init__(*args, **kwargs)
 
     def clean_password(self):
-        password=self.cleaned_data['password']
-        self.user_cache=authenticate(
+        password = self.cleaned_data['password']
+        self.user_cache = authenticate(
             username=self.request.session['phone_number'],
             password=password,
         )
         if self.user_cache is None:
-            raise  ValidationError(
-            self.error_massages['invalid_login'],
-        )
+            raise ValidationError(
+                self.error_massages['invalid_login'],
+            )
         elif self.user_cache.is_active == False:
             raise ValidationError(
                 self.error_massages['inactive'],
             )
         return password
 
+
 class ForgetPasswordForm(forms.Form):
-    phone_number=forms.CharField()
-    error_massages={
-        'phone_token_does_not_exist':_('There is not account with this phone number'),
-        'invalid_phone':_('Phone number is not valid'),
+    phone_number = forms.CharField()
+    error_massages = {
+        'phone_token_does_not_exist': _('There is not account with this phone number'),
+        'invalid_phone': _('Phone number is not valid'),
     }
+
     def __init__(self, request=None, *args, **kwargs):
         self.request = request
         self.phone_token = None
         super().__init__(*args, **kwargs)
 
     def clean_phone_number(self):
-        phone_number=self.cleaned_data['phone_number']
+        phone_number = self.cleaned_data['phone_number']
         if regex_phone_number(phone_number):
             try:
-                self.phone_token=PhoneToken.objects.get(
+                self.phone_token = PhoneToken.objects.get(
                     phone_number=phone_number,
                 )
             except:
@@ -129,6 +139,7 @@ class ForgetPasswordForm(forms.Form):
             raise ValidationError(
                 self.error_massages['invalid_phone'],
             )
+
 
 class SetPasswordForm(forms.Form):
     """
@@ -151,7 +162,7 @@ class SetPasswordForm(forms.Form):
     )
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user',None)
+        self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
     def clean_new_password2(self):
