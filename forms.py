@@ -59,7 +59,6 @@ class PhoneTokenConfirmForm(forms.Form):
         super().__init__(*args, **kwargs)
 
     def clean_otp(self):
-        print('form request:', self.request)
         GenerateLimitation(self.request)
         otp = self.cleaned_data['otp']
         self.user_cache = authenticate(
