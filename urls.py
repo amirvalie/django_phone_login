@@ -8,11 +8,13 @@ from .views import (
     ConfirmPasswordToken,
     ChangePassword,
 )
-from .api.phone_login_apis import GenerateTokenApi
+from .api.phone_login_apis import GenerateTokenApi, ConfirmTokenApi
+
 app_name = 'phone_login'
 
 drf_urlpatterns = [
     path('api/login/', GenerateTokenApi.as_view(), name='login-api'),
+    path('api/confirm_otp/', ConfirmTokenApi.as_view(), name='confirm-otp-api'),
 ]
 
 urlpatterns = [
