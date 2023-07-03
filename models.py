@@ -91,8 +91,6 @@ class PhoneToken(models.Model):
             obj.used = False
             obj.save()
             print(obj.otp)
-            return obj
-        return None
 
     @classmethod
     def generate_otp(cls):
