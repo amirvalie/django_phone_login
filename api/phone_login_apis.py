@@ -10,6 +10,7 @@ from .serializers import PhoneTokenSerializer, ConfirmTokenSerializer
 from .permissions import IsNotAuthenticated
 from ..limit_request import GenerateLimitation
 
+
 class GenerateTokenApi(APIView):
     permission_classes = [IsNotAuthenticated]
 

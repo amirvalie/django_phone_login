@@ -3,7 +3,7 @@ from rest_framework.permissions import BasePermission
 
 class IsNotAuthenticated(BasePermission):
     """
-    Allows access only to authenticated users.
+    Allows access only to not authenticated users.
     """
     def has_permission(self, request, view):
-        return bool(not request.user and not request.user.is_authenticated)
+        return bool(request.user.is_anonymous and not request.user.is_authenticated)
