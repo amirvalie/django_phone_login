@@ -24,6 +24,8 @@ class GenerateLimitation(object):
     def expire_after(self):
         return GenerateLimitation.expire_cache * 60
         
+
+
 def check_limitation(func):
     """
     in this decorator we check whether the number of user requests is valid or not
