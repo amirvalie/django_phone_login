@@ -28,8 +28,7 @@ class PhoneTokenForm(forms.Form):
         'invalid_phone': _('Phone number is not valid'),
     }
 
-    def __init__(self, request=None, *args, **kwargs):
-        self.request = request
+    def __init__(self, *args, **kwargs):
         self.phone_token = None
         super().__init__(*args, **kwargs)
 
@@ -67,15 +66,19 @@ class PhoneTokenConfirmForm(forms.Form):
             phone_number=self.request.session['phone_number'],
         )
         if self.user_cache is None:
-            raise ValidationError(
-                self.error_massages['invalid_otp'],
-            )
+            self.invalid_opt()
         else:
-            self.inactive_user(self.user_cache)
+            self.inactive_user()
         return str(otp)
 
-    def inactive_user(self, user):
-        if user.is_active == False:
+    def invalid_opt(self):
+        if self.user_cache is None:
+            raise ValidationError(
+                self.error_massages['invalid_otp']
+            )
+
+    def inactive_user(self):
+        if self.user_cache.is_active == False:
             raise ValidationError(
                 self.error_massages['inactive'],
             )

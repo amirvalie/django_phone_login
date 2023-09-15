@@ -17,3 +17,10 @@ class PhoneTokenSerializer(serializers.Serializer):
 class ConfirmTokenSerializer(serializers.Serializer):
     phone_number = serializers.CharField(max_length=11, validators=[validate_phone_number], required=True)
     otp = serializers.IntegerField()
+
+
+class PasswordLoginSerializer(serializers.Serializer):
+    phone_number = serializers.CharField(max_length=11, validators=[validate_phone_number], required=True)
+    password = serializers.CharField(
+        style={'input_type':'password'}
+    )

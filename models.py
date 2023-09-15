@@ -71,7 +71,6 @@ class PhoneToken(models.Model):
     )
     otp = models.IntegerField(null=True, blank=True)
     timestamp = models.DateTimeField(auto_now=True)
-    used = models.BooleanField(default=False)
     ip_address = models.GenericIPAddressField(null=True, blank=True, editable=False)
 
     def validate_otp(self):
@@ -86,16 +85,16 @@ class PhoneToken(models.Model):
 
     @classmethod
     def send_otp(cls, obj):
-        if obj.validate_otp():
+        if obj.validate_otp() == True:
             obj.otp = cls.generate_otp()
-            obj.used = False
             obj.save()
             print(obj.otp)
+            return obj.otp
 
     @classmethod
     def generate_otp(cls):
         """
-        Generate random number for otp 
+        Generate random number for otp
         """
         number = '0123456789'
         length = 5

@@ -50,7 +50,7 @@ class GenerateToken(FormView):
     success_url = reverse_lazy('phone_login:confirm_otp')
 
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request=request, data=request.POST)
+        form = self.form_class(data=request.POST)
         if form.is_valid():
             return self.form_valid(form)
         else:

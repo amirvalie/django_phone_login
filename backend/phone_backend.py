@@ -33,7 +33,6 @@ class PhoneBackend(ModelBackend):
                 phone_number=phone_number,
                 otp=otp,
                 timestamp__lte=diffrence_time,
-                used=False
             )
         except PhoneToken.DoesNotExist:
             return None
