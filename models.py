@@ -89,6 +89,7 @@ class PhoneToken(models.Model):
             obj.otp = cls.generate_otp()
             obj.save()
             print(obj.otp)
+            return obj.otp
 
     @classmethod
     def generate_otp(cls):
