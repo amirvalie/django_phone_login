@@ -1,8 +1,6 @@
 from urllib import response
 from django.test import TestCase
-from django.test import Client
 from django.conf import settings
-import phone
 from ..models import PhoneToken
 import datetime
 
@@ -10,7 +8,6 @@ import datetime
 
 class TestView(TestCase):
     def setUp(self) -> None:
-        self.client = Client()
         self.phone_number = '09033285705'
         self.otp = 44883
         self.token_object = PhoneToken.objects.create(
