@@ -8,16 +8,11 @@ from django.utils.encoding import force_bytes
 from django.urls import reverse
 from django.contrib.auth.tokens import default_token_generator
 from .limit_request import GenerateLimitation, check_limitation
-from django.views.generic.base import TemplateView
 from django.views.generic.edit import FormView
 from django.utils.decorators import method_decorator
 from django.urls import reverse_lazy
-from django.views.decorators.cache import never_cache
-from django.views.decorators.debug import sensitive_post_parameters
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
-from django.http import HttpResponseRedirect
-
 User = get_user_model()
 from .decorators import (
     password_require,
@@ -34,8 +29,8 @@ from .forms import (
 
 
 def invalid_attempts_massage_view(request):
-    """ 
-    This function is executed when the number of user attempts to login 
+    """
+    This function is executed when the number of user attempts to login
     or enter the code exceeds the allowed limit
     """
     return render(request, 'registration/invalid_attempts.html')
