@@ -87,8 +87,7 @@ class PhoneTokenConfirmForm(forms.Form):
 class PasswordLoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput())
     error_massages = {
-        "invalid_login": "Please enter a correct username and password. Note that both "
-                         "fields may be case-sensitive.",
+        "invalid_login": "Please enter a correct username and password. Note that both fields may be case-sensitive.",
         'inactive': _('Your account is inactive'),
     }
 

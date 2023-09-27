@@ -12,6 +12,10 @@ class TestView(TestCase):
     def setUp(self):
         self.client = Client()
         self.phone_number = '09033333333'
+        self.user = User(phone=self.phone_number)
+        self.user.set_password('test')
+        self.user.save()
+
     def test_generate_token_view_valid_response(self):
         cache.set('127.0.0.1', 0)
         get_response = self.client.get(reverse('phone_login:login'))
@@ -39,3 +43,30 @@ class TestView(TestCase):
             self.phone_number
         )
 
+    def test_login_with_password_valid_response(self):
+        session = self.client.session
+        session['phone_number'] = self.user.phone
+        session.save()
+        response = self.client.post(reverse('phone_login:password_login'), {'password': 'test'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/')
+
+    def test_login_with_password_invalid_password(self):
+        #invalid password
+        session = self.client.session
+        session['phone_number'] = self.user.phone
+        session.save()
+        response = self.client.post(reverse('phone_login:password_login'), {'password': 'some_worong_password'})
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(
+            response,
+            'form',
+            'password',
+            'Please enter a correct username and password. Note that both fields may be case-sensitive.'
+        )
+
+    def teset_login_with_password_invalid_session(self):
+        # not setting phone number to session
+        response = self.client.post(reverse('phone_login:password_login'), {'password': 'test'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('phone_login:login'))
